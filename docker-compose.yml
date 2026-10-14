@@ -1,0 +1,109 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: dev
+    image: fretehub-app
+    container_name: fretehub_app
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/var/www
+      - vendor_cache:/var/www/vendor
+    environment:
+      - APP_ENV=local
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - fretehub
+
+  queue:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: dev
+    image: fretehub-app
+    container_name: fretehub_queue
+    restart: unless-stopped
+    command: php artisan queue:work --sleep=3 --tries=3 --timeout=60
+    volumes:
+      - .:/var/www
+      - vendor_cache:/var/www/vendor
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - fretehub
+
+  scheduler:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: dev
+    image: fretehub-app
+    container_name: fretehub_scheduler
+    restart: unless-stopped
+    command: sh -c "while true; do php artisan schedule:run --verbose --no-interaction & sleep 60; done"
+    volumes:
+      - .:/var/www
+      - vendor_cache:/var/www/vendor
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - fretehub
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: fretehub_postgres
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: ${DB_DATABASE:-fretehub}
+      POSTGRES_USER: ${DB_USERNAME:-fretehub}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-secret}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME:-fretehub} -d ${DB_DATABASE:-fretehub}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    networks:
+      - fretehub
+
+  redis:
+    image: redis:7-alpine
+    container_name: fretehub_redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    command: redis-server --appendonly yes
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    networks:
+      - fretehub
+
+networks:
+  fretehub:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  redis_data:
+  vendor_cache:
