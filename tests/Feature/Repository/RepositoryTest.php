@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 use App\Domain\Shipping\Contracts\QuoteRepository;
 use App\Domain\Shipping\Contracts\ShipmentRepository;
-use App\Domain\Shipping\Enums\ShipmentStatus;
 use App\Models\Quote;
-use App\Models\QuoteOption;
 use App\Models\Shipment;
 use App\Models\Store;
 
