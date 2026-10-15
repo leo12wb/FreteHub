@@ -8,23 +8,25 @@
 ![Tests](https://img.shields.io/badge/tests-Pest%20PHP-purple)
 ![License](https://img.shields.io/badge/license-MIT-green)
 
-API REST de cotação e gestão de fretes multi-transportadora, construída com **Laravel 12**, **Clean Architecture**, **Docker** e **Pest PHP**.
+> [Leia em Português](README.pt.md) · [Lire en Français](README.fr.md)
+
+A multi-carrier freight quoting and management REST API built with **Laravel 12**, **Clean Architecture**, **Docker**, and **Pest PHP**.
 
 ---
 
-## Funcionalidades
+## Features
 
-- Cotação simultânea em múltiplas transportadoras (Correios PAC/SEDEX, JadLog, TotalExpress)
-- Cache Redis automático de cotações por 1 hora
-- Confirmação de envio com geração de código de rastreamento
-- Rastreamento de status em tempo real via jobs na fila
-- Webhooks com assinatura HMAC-SHA256 e retry automático
-- Autenticação via Laravel Sanctum
-- Documentação interativa Swagger UI
+- Simultaneous quotes from multiple carriers (Correios PAC/SEDEX, JadLog, TotalExpress)
+- Automatic Redis cache for quotes (1-hour TTL)
+- Shipment confirmation with automatic tracking code generation
+- Real-time tracking status updates via queued jobs
+- Webhooks with HMAC-SHA256 signing and automatic retry
+- Authentication via Laravel Sanctum
+- Interactive Swagger UI documentation
 
 ---
 
-## Arquitetura
+## Architecture
 
 ```mermaid
 graph TD
@@ -66,83 +68,83 @@ graph TD
 
 ## Endpoints
 
-| Método   | Endpoint                          | Auth | Descrição                          |
+| Method   | Endpoint                          | Auth | Description                        |
 |----------|-----------------------------------|------|------------------------------------|
-| `POST`   | `/api/v1/auth/register`           | —    | Registrar nova loja                |
-| `POST`   | `/api/v1/auth/login`              | —    | Login e geração de token           |
-| `POST`   | `/api/v1/auth/logout`             | ✓    | Revogar token atual                |
-| `POST`   | `/api/v1/quotes`                  | ✓    | Criar cotação multi-transportadora |
-| `POST`   | `/api/v1/shipments`               | ✓    | Confirmar envio de uma cotação     |
-| `GET`    | `/api/v1/shipments/{id}/tracking` | ✓    | Rastrear envio                     |
-| `POST`   | `/api/v1/webhooks`                | ✓    | Configurar webhook                 |
-| `DELETE` | `/api/v1/webhooks`                | ✓    | Remover webhook                    |
-| `GET`    | `/api/health`                     | —    | Saúde da aplicação (DB + Redis)    |
+| `POST`   | `/api/v1/auth/register`           | —    | Register a new store               |
+| `POST`   | `/api/v1/auth/login`              | —    | Login and token generation         |
+| `POST`   | `/api/v1/auth/logout`             | ✓    | Revoke current token               |
+| `POST`   | `/api/v1/quotes`                  | ✓    | Create a multi-carrier quote       |
+| `POST`   | `/api/v1/shipments`               | ✓    | Confirm shipment from a quote      |
+| `GET`    | `/api/v1/shipments/{id}/tracking` | ✓    | Track a shipment                   |
+| `POST`   | `/api/v1/webhooks`                | ✓    | Configure webhook                  |
+| `DELETE` | `/api/v1/webhooks`                | ✓    | Remove webhook                     |
+| `GET`    | `/api/health`                     | —    | Application health (DB + Redis)    |
 | `GET`    | `/api/documentation`              | —    | Swagger UI                         |
 
-> Rotas autenticadas: throttle de **60 req/min**.
+> Authenticated routes: throttle **60 req/min**.
 
 ---
 
-## Setup em 1 comando
+## One-command Setup
 
 ```bash
-git clone https://github.com/seu-usuario/fretehub.git && cd fretehub && cp .env.example .env && docker compose up -d && docker compose exec app php artisan migrate --seed
+git clone https://github.com/your-username/fretehub.git && cd fretehub && cp .env.example .env && docker compose up -d && docker compose exec app php artisan migrate --seed
 ```
 
-### Passo a passo
+### Step by step
 
 ```bash
-# 1. Clonar e entrar no diretório
-git clone https://github.com/seu-usuario/fretehub.git
+# 1. Clone and enter the directory
+git clone https://github.com/your-username/fretehub.git
 cd fretehub
 
-# 2. Copiar variáveis de ambiente
+# 2. Copy environment variables
 cp .env.example .env
 
-# 3. Subir containers (app, postgres, redis, queue, scheduler)
+# 3. Start containers (app, postgres, redis, queue, scheduler)
 docker compose up -d
 
-# 4. Migrar banco e popular seeders
+# 4. Run migrations and seeders
 docker compose exec app php artisan migrate --seed
 
-# 5. Gerar documentação Swagger
+# 5. Generate Swagger documentation
 docker compose exec app php artisan l5-swagger:generate
 ```
 
-A API estará disponível em **http://localhost:8000** e o Swagger em **http://localhost:8000/api/documentation**.
+The API will be available at **http://localhost:8000** and Swagger at **http://localhost:8000/api/documentation**.
 
 ---
 
-## Variáveis de Ambiente
+## Environment Variables
 
-| Variável           | Descrição                  | Padrão     |
+| Variable           | Description                | Default    |
 |--------------------|----------------------------|------------|
-| `APP_ENV`          | Ambiente da aplicação      | `local`    |
-| `DB_HOST`          | Host do PostgreSQL         | `postgres` |
-| `DB_DATABASE`      | Nome do banco              | `fretehub` |
-| `DB_USERNAME`      | Usuário do banco           | `fretehub` |
-| `DB_PASSWORD`      | Senha do banco             | `secret`   |
-| `REDIS_HOST`       | Host do Redis              | `redis`    |
-| `QUEUE_CONNECTION` | Driver de filas            | `redis`    |
+| `APP_ENV`          | Application environment    | `local`    |
+| `DB_HOST`          | PostgreSQL host            | `postgres` |
+| `DB_DATABASE`      | Database name              | `fretehub` |
+| `DB_USERNAME`      | Database user              | `fretehub` |
+| `DB_PASSWORD`      | Database password          | `secret`   |
+| `REDIS_HOST`       | Redis host                 | `redis`    |
+| `QUEUE_CONNECTION` | Queue driver               | `redis`    |
 
 ---
 
-## Testes
+## Tests
 
 ```bash
-# Rodar todos os testes
+# Run all tests
 docker compose exec app php artisan test
 
-# Com relatório de cobertura (≥ 80%)
+# With coverage report (>= 80%)
 docker compose exec app php artisan test --coverage --min=80
 ```
 
 ---
 
-## Qualidade de Código
+## Code Quality
 
 ```bash
-# PHPStan nível 8
+# PHPStan level 8
 docker compose exec app ./vendor/bin/phpstan analyse
 
 # Laravel Pint (code style)
@@ -151,32 +153,32 @@ docker compose exec app ./vendor/bin/pint
 
 ---
 
-## Transportadoras (Mock)
+## Carriers (Mock)
 
-| Transportadora | Serviço  | Fórmula base            | Prazo base |
-|----------------|----------|-------------------------|------------|
-| Correios       | PAC      | peso × R$3,50 + R$8,00  | 7 dias     |
-| Correios       | SEDEX    | peso × R$7,00 + R$15,00 | 2 dias     |
-| JadLog         | Expresso | peso × R$4,20 + R$6,50  | 5 dias     |
-| TotalExpress   | Standard | peso × R$5,00 + R$5,00  | 3 dias     |
+| Carrier      | Service  | Base formula              | Base deadline |
+|--------------|----------|---------------------------|---------------|
+| Correios     | PAC      | weight × R$3.50 + R$8.00  | 7 days        |
+| Correios     | SEDEX    | weight × R$7.00 + R$15.00 | 2 days        |
+| JadLog       | Expresso | weight × R$4.20 + R$6.50  | 5 days        |
+| TotalExpress | Standard | weight × R$5.00 + R$5.00  | 3 days        |
 
-> Todas aplicam variação aleatória de ±10% e 5% de chance de falha simulada.
-
----
-
-## Decisões Arquiteturais
-
-| Decisão | Motivo |
-|---------|--------|
-| Clean Architecture | Separa regras de negócio de frameworks — facilita testes e manutenção |
-| Strategy Pattern para carriers | Adicionar nova transportadora sem alterar código existente (OCP) |
-| UUID para quotes e shipments | IDs públicos não devem ser sequenciais (segurança) |
-| Money em centavos (int) | Evita erros de ponto flutuante em cálculos financeiros |
-| Jobs para webhooks | Resiliência: retry automático sem bloquear a request HTTP |
-| Cache Redis por hash dos parâmetros | Evita consultar carriers repetidamente para a mesma rota/peso |
+> All carriers apply a random ±10% variation and have a 5% simulated failure chance.
 
 ---
 
-## Licença
+## Architectural Decisions
+
+| Decision | Reason |
+|----------|--------|
+| Clean Architecture | Decouples business rules from frameworks — easier to test and maintain |
+| Strategy Pattern for carriers | Add a new carrier without modifying existing code (OCP) |
+| UUID for quotes and shipments | Public IDs must not be sequential (security) |
+| Money as cents (int) | Avoids floating-point errors in financial calculations |
+| Jobs for webhooks | Resilience: automatic retry without blocking the HTTP request |
+| Redis cache by parameter hash | Avoids querying carriers repeatedly for the same route/weight |
+
+---
+
+## License
 
 MIT

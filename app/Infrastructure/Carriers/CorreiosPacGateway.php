@@ -20,8 +20,6 @@ final class CorreiosPacGateway implements CarrierGateway
 
     private const BASE_DELIVERY_DAYS = 7;
 
-    private const FAILURE_RATE = 0.05;
-
     private const VARIATION_PERCENT = 0.10;
 
     public function calculateRate(
@@ -56,7 +54,8 @@ final class CorreiosPacGateway implements CarrierGateway
 
     private function simulateFailure(): void
     {
-        if ((mt_rand(1, 100) / 100) <= self::FAILURE_RATE) {
+        $rate = (int) env('CARRIER_FAILURE_RATE', 5);
+        if ($rate > 0 && mt_rand(1, 100) <= $rate) {
             throw new CarrierUnavailableException('Correios PAC indisponível no momento.');
         }
     }
