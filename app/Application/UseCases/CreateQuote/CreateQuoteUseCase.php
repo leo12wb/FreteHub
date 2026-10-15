@@ -24,7 +24,7 @@ final class CreateQuoteUseCase
 {
     private const CACHE_TTL_SECONDS = 3600;
 
-    /** @param iterable<CarrierGateway> $carriers */
+    /** @param iterable<int, CarrierGateway> $carriers */
     public function __construct(
         private readonly QuoteRepository $quoteRepository,
         private readonly Dispatcher      $dispatcher,

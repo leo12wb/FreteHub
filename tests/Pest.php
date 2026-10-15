@@ -30,6 +30,10 @@ expect()->extend('toBeValidTrackingCode', function () {
 |--------------------------------------------------------------------------
 */
 
+/**
+ * @param  array<string, mixed> $attributes
+ * @return array{\App\Models\Store, string}
+ */
 function createAuthenticatedStore(array $attributes = []): array
 {
     $store = \App\Models\Store::factory()->create($attributes);
