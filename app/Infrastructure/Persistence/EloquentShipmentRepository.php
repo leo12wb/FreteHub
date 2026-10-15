@@ -14,18 +14,18 @@ final class EloquentShipmentRepository implements ShipmentRepository
 {
     public function save(Shipment $shipment): void
     {
-        ShipmentModel::updateOrCreate(
-            ['id' => $shipment->id],
-            [
-                'quote_id' => $shipment->quoteId,
-                'store_id' => $shipment->storeId,
-                'carrier' => $shipment->carrier,
-                'service' => $shipment->service,
-                'tracking_code' => $shipment->trackingCode,
-                'status' => $shipment->status->value,
-                'label_url' => $shipment->labelUrl,
-            ]
-        );
+        $model = ShipmentModel::findOrNew($shipment->id);
+        $model->id = $shipment->id;
+        $model->fill([
+            'quote_id' => $shipment->quoteId,
+            'store_id' => $shipment->storeId,
+            'carrier' => $shipment->carrier,
+            'service' => $shipment->service,
+            'tracking_code' => $shipment->trackingCode,
+            'status' => $shipment->status->value,
+            'label_url' => $shipment->labelUrl,
+        ]);
+        $model->save();
     }
 
     public function findById(string $id): ?Shipment

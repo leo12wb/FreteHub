@@ -20,19 +20,19 @@ final class EloquentQuoteRepository implements QuoteRepository
 {
     public function save(Quote $quote): void
     {
-        $model = QuoteModel::updateOrCreate(
-            ['id' => $quote->id],
-            [
-                'store_id' => $quote->storeId,
-                'origin_zipcode' => $quote->origin->zipcode,
-                'destination_zipcode' => $quote->destination->zipcode,
-                'weight_kg' => $quote->weight->kg,
-                'dimensions' => $quote->dimensions->toArray(),
-                'declared_value_cents' => $quote->declaredValue->amountInCents,
-                'status' => $quote->status->value,
-                'expires_at' => $quote->expiresAt->format('Y-m-d H:i:s'),
-            ]
-        );
+        $model = QuoteModel::findOrNew($quote->id);
+        $model->id = $quote->id;
+        $model->fill([
+            'store_id' => $quote->storeId,
+            'origin_zipcode' => $quote->origin->zipcode,
+            'destination_zipcode' => $quote->destination->zipcode,
+            'weight_kg' => $quote->weight->kg,
+            'dimensions' => $quote->dimensions->toArray(),
+            'declared_value_cents' => $quote->declaredValue->amountInCents,
+            'status' => $quote->status->value,
+            'expires_at' => $quote->expiresAt->format('Y-m-d H:i:s'),
+        ]);
+        $model->save();
 
         $model->options()->delete();
 
