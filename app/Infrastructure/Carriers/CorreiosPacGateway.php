@@ -54,7 +54,7 @@ final class CorreiosPacGateway implements CarrierGateway
 
     private function simulateFailure(): void
     {
-        $rate = (int) env('CARRIER_FAILURE_RATE', 5);
+        $rate = (int) config('shipping.carrier_failure_rate', 5);
         if ($rate > 0 && mt_rand(1, 100) <= $rate) {
             throw new CarrierUnavailableException('Correios PAC indisponível no momento.');
         }
