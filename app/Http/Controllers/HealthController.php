@@ -10,6 +10,27 @@ use Illuminate\Support\Facades\Redis;
 
 class HealthController extends Controller
 {
+    /**
+     * @OA\Get(
+     *     path="/health",
+     *     tags={"Health"},
+     *     summary="Verificar saúde da aplicação",
+     *     description="Checa a conectividade com o banco de dados e o Redis.",
+     *     @OA\Response(
+     *         response=200,
+     *         description="Aplicação saudável",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status",  type="string", example="ok"),
+     *             @OA\Property(property="version", type="string", example="1.0.0"),
+     *             @OA\Property(property="checks",  type="object",
+     *                 @OA\Property(property="database", type="string", example="ok"),
+     *                 @OA\Property(property="redis",    type="string", example="ok")
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(response=503, description="Aplicação degradada")
+     * )
+     */
     public function index(): JsonResponse
     {
         $db    = $this->checkDatabase();

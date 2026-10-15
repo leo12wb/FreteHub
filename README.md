@@ -1,59 +1,182 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# FreteHub API
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+![PHP](https://img.shields.io/badge/PHP-8.2-blue?logo=php)
+![Laravel](https://img.shields.io/badge/Laravel-12-red?logo=laravel)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-blue?logo=postgresql)
+![Redis](https://img.shields.io/badge/Redis-7-red?logo=redis)
+![PHPStan](https://img.shields.io/badge/PHPStan-level%208-brightgreen)
+![Tests](https://img.shields.io/badge/tests-Pest%20PHP-purple)
+![License](https://img.shields.io/badge/license-MIT-green)
 
-## About Laravel
+API REST de cotação e gestão de fretes multi-transportadora, construída com **Laravel 12**, **Clean Architecture**, **Docker** e **Pest PHP**.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+---
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Funcionalidades
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- Cotação simultânea em múltiplas transportadoras (Correios PAC/SEDEX, JadLog, TotalExpress)
+- Cache Redis automático de cotações por 1 hora
+- Confirmação de envio com geração de código de rastreamento
+- Rastreamento de status em tempo real via jobs na fila
+- Webhooks com assinatura HMAC-SHA256 e retry automático
+- Autenticação via Laravel Sanctum
+- Documentação interativa Swagger UI
 
-## Learning Laravel
+---
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+## Arquitetura
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+```mermaid
+graph TD
+    Client -->|HTTP JSON| Routes
+    Routes --> Controllers
+    Controllers --> UseCases
 
-## Laravel Sponsors
+    subgraph Application Layer
+        UseCases --> QuoteRepository
+        UseCases --> ShipmentRepository
+        UseCases --> CarrierGateway
+        UseCases --> Events
+    end
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+    subgraph Domain Layer
+        Entities[Entities\nQuote · Shipment]
+        ValueObjects[Value Objects\nAddress · Weight · Money · Dimensions]
+        Enums[Enums\nQuoteStatus · ShipmentStatus]
+    end
 
-### Premium Partners
+    subgraph Infrastructure Layer
+        QuoteRepository --> PostgreSQL
+        ShipmentRepository --> PostgreSQL
+        CarrierGateway --> CorreiosPAC
+        CarrierGateway --> CorreiosSEDEX
+        CarrierGateway --> JadLog
+        CarrierGateway --> TotalExpress
+        Cache[Redis Cache] --> UseCases
+    end
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+    subgraph Queue
+        Jobs[TrackShipmentJob\nSendWebhookJob]
+    end
 
-## Contributing
+    Events --> Jobs
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+---
 
-## Code of Conduct
+## Endpoints
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+| Método   | Endpoint                          | Auth | Descrição                          |
+|----------|-----------------------------------|------|------------------------------------|
+| `POST`   | `/api/v1/auth/register`           | —    | Registrar nova loja                |
+| `POST`   | `/api/v1/auth/login`              | —    | Login e geração de token           |
+| `POST`   | `/api/v1/auth/logout`             | ✓    | Revogar token atual                |
+| `POST`   | `/api/v1/quotes`                  | ✓    | Criar cotação multi-transportadora |
+| `POST`   | `/api/v1/shipments`               | ✓    | Confirmar envio de uma cotação     |
+| `GET`    | `/api/v1/shipments/{id}/tracking` | ✓    | Rastrear envio                     |
+| `POST`   | `/api/v1/webhooks`                | ✓    | Configurar webhook                 |
+| `DELETE` | `/api/v1/webhooks`                | ✓    | Remover webhook                    |
+| `GET`    | `/api/health`                     | —    | Saúde da aplicação (DB + Redis)    |
+| `GET`    | `/api/documentation`              | —    | Swagger UI                         |
 
-## Security Vulnerabilities
+> Rotas autenticadas: throttle de **60 req/min**.
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+---
 
-## License
+## Setup em 1 comando
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+```bash
+git clone https://github.com/seu-usuario/fretehub.git && cd fretehub && cp .env.example .env && docker compose up -d && docker compose exec app php artisan migrate --seed
+```
+
+### Passo a passo
+
+```bash
+# 1. Clonar e entrar no diretório
+git clone https://github.com/seu-usuario/fretehub.git
+cd fretehub
+
+# 2. Copiar variáveis de ambiente
+cp .env.example .env
+
+# 3. Subir containers (app, postgres, redis, queue, scheduler)
+docker compose up -d
+
+# 4. Migrar banco e popular seeders
+docker compose exec app php artisan migrate --seed
+
+# 5. Gerar documentação Swagger
+docker compose exec app php artisan l5-swagger:generate
+```
+
+A API estará disponível em **http://localhost:8000** e o Swagger em **http://localhost:8000/api/documentation**.
+
+---
+
+## Variáveis de Ambiente
+
+| Variável           | Descrição                  | Padrão     |
+|--------------------|----------------------------|------------|
+| `APP_ENV`          | Ambiente da aplicação      | `local`    |
+| `DB_HOST`          | Host do PostgreSQL         | `postgres` |
+| `DB_DATABASE`      | Nome do banco              | `fretehub` |
+| `DB_USERNAME`      | Usuário do banco           | `fretehub` |
+| `DB_PASSWORD`      | Senha do banco             | `secret`   |
+| `REDIS_HOST`       | Host do Redis              | `redis`    |
+| `QUEUE_CONNECTION` | Driver de filas            | `redis`    |
+
+---
+
+## Testes
+
+```bash
+# Rodar todos os testes
+docker compose exec app php artisan test
+
+# Com relatório de cobertura (≥ 80%)
+docker compose exec app php artisan test --coverage --min=80
+```
+
+---
+
+## Qualidade de Código
+
+```bash
+# PHPStan nível 8
+docker compose exec app ./vendor/bin/phpstan analyse
+
+# Laravel Pint (code style)
+docker compose exec app ./vendor/bin/pint
+```
+
+---
+
+## Transportadoras (Mock)
+
+| Transportadora | Serviço  | Fórmula base            | Prazo base |
+|----------------|----------|-------------------------|------------|
+| Correios       | PAC      | peso × R$3,50 + R$8,00  | 7 dias     |
+| Correios       | SEDEX    | peso × R$7,00 + R$15,00 | 2 dias     |
+| JadLog         | Expresso | peso × R$4,20 + R$6,50  | 5 dias     |
+| TotalExpress   | Standard | peso × R$5,00 + R$5,00  | 3 dias     |
+
+> Todas aplicam variação aleatória de ±10% e 5% de chance de falha simulada.
+
+---
+
+## Decisões Arquiteturais
+
+| Decisão | Motivo |
+|---------|--------|
+| Clean Architecture | Separa regras de negócio de frameworks — facilita testes e manutenção |
+| Strategy Pattern para carriers | Adicionar nova transportadora sem alterar código existente (OCP) |
+| UUID para quotes e shipments | IDs públicos não devem ser sequenciais (segurança) |
+| Money em centavos (int) | Evita erros de ponto flutuante em cálculos financeiros |
+| Jobs para webhooks | Resiliência: retry automático sem bloquear a request HTTP |
+| Cache Redis por hash dos parâmetros | Evita consultar carriers repetidamente para a mesma rota/peso |
+
+---
+
+## Licença
+
+MIT
