@@ -6,12 +6,13 @@ namespace Database\Factories;
 
 use App\Domain\Shipping\Enums\ShipmentStatus;
 use App\Models\Quote;
+use App\Models\Shipment;
 use App\Models\Store;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Shipment>
+ * @extends Factory<Shipment>
  */
 class ShipmentFactory extends Factory
 {
@@ -21,13 +22,13 @@ class ShipmentFactory extends Factory
         $quote = Quote::factory()->confirmed()->create(['store_id' => $store->id]);
 
         return [
-            'quote_id'      => $quote->id,
-            'store_id'      => $store->id,
-            'carrier'       => fake()->randomElement(['Correios', 'JadLog', 'Total Express']),
-            'service'       => fake()->randomElement(['PAC', 'SEDEX', 'Econômico', 'Standard']),
+            'quote_id' => $quote->id,
+            'store_id' => $store->id,
+            'carrier' => fake()->randomElement(['Correios', 'JadLog', 'Total Express']),
+            'service' => fake()->randomElement(['PAC', 'SEDEX', 'Econômico', 'Standard']),
             'tracking_code' => $this->generateTrackingCode(),
-            'status'        => ShipmentStatus::Created,
-            'label_url'     => null,
+            'status' => ShipmentStatus::Created,
+            'label_url' => null,
         ];
     }
 
@@ -49,7 +50,7 @@ class ShipmentFactory extends Factory
     private function generateTrackingCode(): string
     {
         return strtoupper(Str::random(2))
-            . str_pad((string) rand(10000000, 99999999), 8, '0')
-            . strtoupper(Str::random(2));
+            .str_pad((string) rand(10000000, 99999999), 8, '0')
+            .strtoupper(Str::random(2));
     }
 }

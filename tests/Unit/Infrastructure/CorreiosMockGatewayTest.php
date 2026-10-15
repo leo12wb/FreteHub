@@ -13,10 +13,10 @@ use App\Infrastructure\Carriers\TotalExpressGateway;
 describe('Carrier Gateways', function (): void {
 
     beforeEach(function (): void {
-        $this->origin      = new Address('01310100');
+        $this->origin = new Address('01310100');
         $this->destination = new Address('20040020');
-        $this->weight      = new Weight(2.0);
-        $this->dimensions  = new Dimensions(20, 15, 10);
+        $this->weight = new Weight(2.0);
+        $this->dimensions = new Dimensions(20, 15, 10);
     });
 
     it('CorreiosPac returns correct carrier and service names', function (): void {
@@ -29,7 +29,7 @@ describe('Carrier Gateways', function (): void {
     it('CorreiosPac calculates price within expected range for 2kg', function (): void {
         // base = 2*3.50 + 8.00 = 15.00 — variation ±10%
         $gateway = new CorreiosPacGateway();
-        $result  = $gateway->calculateRate($this->origin, $this->destination, $this->weight, $this->dimensions);
+        $result = $gateway->calculateRate($this->origin, $this->destination, $this->weight, $this->dimensions);
 
         expect($result->price->toFloat())->toBeGreaterThanOrEqual(13.50)
             ->and($result->price->toFloat())->toBeLessThanOrEqual(16.50)
@@ -47,7 +47,7 @@ describe('Carrier Gateways', function (): void {
     it('CorreiosSedex calculates price within expected range for 2kg', function (): void {
         // base = 2*7.00 + 15.00 = 29.00 — variation ±10%
         $gateway = new CorreiosSedexGateway();
-        $result  = $gateway->calculateRate($this->origin, $this->destination, $this->weight, $this->dimensions);
+        $result = $gateway->calculateRate($this->origin, $this->destination, $this->weight, $this->dimensions);
 
         expect($result->price->toFloat())->toBeGreaterThanOrEqual(26.10)
             ->and($result->price->toFloat())->toBeLessThanOrEqual(31.90)

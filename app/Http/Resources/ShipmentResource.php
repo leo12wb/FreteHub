@@ -15,15 +15,15 @@ class ShipmentResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id'            => $this->id,
-            'quote_id'      => $this->quoteId,
-            'store_id'      => $this->storeId,
-            'carrier'       => $this->carrier,
-            'service'       => $this->service,
+            'id' => $this->id,
+            'quote_id' => $this->quoteId,
+            'store_id' => $this->storeId,
+            'carrier' => $this->carrier,
+            'service' => $this->service,
             'tracking_code' => $this->trackingCode,
-            'status'        => $this->status->value,
-            'label_url'     => $this->labelUrl,
-            'created_at'    => $this->createdAt->format('Y-m-d\TH:i:s\Z'),
+            'status' => $this->status->value,
+            'label_url' => $this->labelUrl,
+            'created_at' => $this->createdAt->format('Y-m-d\TH:i:s\Z'),
         ];
     }
 }

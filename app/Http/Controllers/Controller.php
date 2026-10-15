@@ -7,6 +7,7 @@ namespace App\Http\Controllers;
  *     title="FreteHub API",
  *     version="1.0.0",
  *     description="API REST de cotação e gestão de fretes multi-transportadora.",
+ *
  *     @OA\Contact(name="FreteHub", email="contato@fretehub.dev")
  * )
  *

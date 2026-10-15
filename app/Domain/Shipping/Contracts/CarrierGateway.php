@@ -12,9 +12,9 @@ use App\Domain\Shipping\ValueObjects\Weight;
 interface CarrierGateway
 {
     public function calculateRate(
-        Address    $origin,
-        Address    $destination,
-        Weight     $weight,
+        Address $origin,
+        Address $destination,
+        Weight $weight,
         Dimensions $dimensions,
     ): CarrierRateResult;
 

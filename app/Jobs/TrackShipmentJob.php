@@ -9,9 +9,9 @@ use App\Domain\Shipping\Enums\ShipmentStatus;
 use App\Domain\Shipping\Events\TrackingUpdated;
 use App\Models\TrackingEvent;
 use DateTimeImmutable;
+use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
-use Illuminate\Contracts\Events\Dispatcher;
 
 final class TrackShipmentJob implements ShouldQueue
 {
@@ -31,40 +31,40 @@ final class TrackShipmentJob implements ShouldQueue
             return;
         }
 
-        $nextStatus  = $this->resolveNextStatus($shipment->status);
+        $nextStatus = $this->resolveNextStatus($shipment->status);
         $description = $this->descriptionFor($nextStatus);
-        $location    = $this->randomLocation();
+        $location = $this->randomLocation();
 
         TrackingEvent::create([
             'shipment_id' => $shipment->id,
-            'status'      => $nextStatus->value,
+            'status' => $nextStatus->value,
             'description' => $description,
-            'location'    => $location,
+            'location' => $location,
             'occurred_at' => (new DateTimeImmutable())->format('Y-m-d H:i:s'),
         ]);
 
-        $updated          = $shipment->transitionTo($nextStatus);
-        $previousStatus   = $shipment->status;
+        $updated = $shipment->transitionTo($nextStatus);
+        $previousStatus = $shipment->status;
 
         $shipmentRepository->save($updated);
         $dispatcher->dispatch(new TrackingUpdated(
-            shipment:       $updated,
+            shipment: $updated,
             previousStatus: $previousStatus,
-            description:    $description,
-            location:       $location,
+            description: $description,
+            location: $location,
         ));
     }
 
     private function resolveNextStatus(ShipmentStatus $current): ShipmentStatus
     {
         return match ($current) {
-            ShipmentStatus::Created   => mt_rand(1, 10) <= 9
+            ShipmentStatus::Created => mt_rand(1, 10) <= 9
                 ? ShipmentStatus::InTransit
                 : ShipmentStatus::Failed,
             ShipmentStatus::InTransit => mt_rand(1, 10) <= 8
                 ? ShipmentStatus::Delivered
                 : ShipmentStatus::Failed,
-            default                   => $current,
+            default => $current,
         };
     }
 
@@ -73,8 +73,8 @@ final class TrackShipmentJob implements ShouldQueue
         return match ($status) {
             ShipmentStatus::InTransit => 'Objeto postado e em trânsito.',
             ShipmentStatus::Delivered => 'Objeto entregue ao destinatário.',
-            ShipmentStatus::Failed    => 'Tentativa de entrega malsucedida.',
-            default                   => 'Status atualizado.',
+            ShipmentStatus::Failed => 'Tentativa de entrega malsucedida.',
+            default => 'Status atualizado.',
         };
     }
 

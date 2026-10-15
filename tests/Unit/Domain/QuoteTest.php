@@ -14,25 +14,25 @@ use DateTimeImmutable;
 function makeQuote(QuoteStatus $status = QuoteStatus::Pending, ?DateTimeImmutable $expiresAt = null, array $options = []): Quote
 {
     return new Quote(
-        id:            'quote-uuid',
-        storeId:       'store-uuid',
-        origin:        new Address('01310100'),
-        destination:   new Address('20040020'),
-        weight:        new Weight(2.0),
-        dimensions:    new Dimensions(20, 15, 10),
+        id: 'quote-uuid',
+        storeId: 'store-uuid',
+        origin: new Address('01310100'),
+        destination: new Address('20040020'),
+        weight: new Weight(2.0),
+        dimensions: new Dimensions(20, 15, 10),
         declaredValue: Money::fromCents(5000),
-        status:        $status,
-        expiresAt:     $expiresAt ?? new DateTimeImmutable('+1 hour'),
-        options:       $options,
+        status: $status,
+        expiresAt: $expiresAt ?? new DateTimeImmutable('+1 hour'),
+        options: $options,
     );
 }
 
 function makeOption(string $carrier, string $service, int $priceCents, int $days): CarrierRateResult
 {
     return new CarrierRateResult(
-        carrier:      $carrier,
-        service:      $service,
-        price:        Money::fromCents($priceCents),
+        carrier: $carrier,
+        service: $service,
+        price: Money::fromCents($priceCents),
         deliveryDays: $days,
     );
 }
@@ -59,7 +59,7 @@ describe('Quote', function (): void {
     });
 
     it('confirm returns new quote with confirmed status', function (): void {
-        $quote     = makeQuote(QuoteStatus::Pending);
+        $quote = makeQuote(QuoteStatus::Pending);
         $confirmed = $quote->confirm();
 
         expect($confirmed->status)->toBe(QuoteStatus::Confirmed)
@@ -67,7 +67,7 @@ describe('Quote', function (): void {
     });
 
     it('expire returns new quote with expired status', function (): void {
-        $quote   = makeQuote(QuoteStatus::Pending);
+        $quote = makeQuote(QuoteStatus::Pending);
         $expired = $quote->expire();
 
         expect($expired->status)->toBe(QuoteStatus::Expired)
@@ -77,11 +77,11 @@ describe('Quote', function (): void {
     it('sorts options by price ascending', function (): void {
         $options = [
             makeOption('Correios', 'SEDEX', 3000, 2),
-            makeOption('JadLog',   'Expresso', 1500, 5),
+            makeOption('JadLog', 'Expresso', 1500, 5),
             makeOption('Correios', 'PAC', 2000, 7),
         ];
 
-        $quote  = makeQuote(options: $options);
+        $quote = makeQuote(options: $options);
         $sorted = $quote->optionsSortedByPrice();
 
         expect($sorted[0]->price->amountInCents)->toBe(1500)
@@ -91,7 +91,7 @@ describe('Quote', function (): void {
 
     it('finds option by carrier and service', function (): void {
         $options = [makeOption('Correios', 'PAC', 2000, 7)];
-        $quote   = makeQuote(options: $options);
+        $quote = makeQuote(options: $options);
 
         $found = $quote->findOption('Correios', 'PAC');
 

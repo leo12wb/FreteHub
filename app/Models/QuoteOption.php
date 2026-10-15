@@ -25,7 +25,7 @@ class QuoteOption extends Model
     protected function casts(): array
     {
         return [
-            'price_cents'   => 'integer',
+            'price_cents' => 'integer',
             'delivery_days' => 'integer',
         ];
     }

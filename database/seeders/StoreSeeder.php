@@ -14,8 +14,8 @@ class StoreSeeder extends Seeder
     {
         // Loja principal para testes manuais
         $loja1 = Store::create([
-            'name'     => 'Loja Exemplo',
-            'email'    => 'loja@exemplo.com',
+            'name' => 'Loja Exemplo',
+            'email' => 'loja@exemplo.com',
             'password' => Hash::make('password'),
         ]);
 
@@ -26,10 +26,10 @@ class StoreSeeder extends Seeder
 
         // Segunda loja com webhook configurado
         $loja2 = Store::create([
-            'name'           => 'E-commerce Teste',
-            'email'          => 'ecommerce@teste.com',
-            'password'       => Hash::make('password'),
-            'webhook_url'    => 'https://webhook.site/test',
+            'name' => 'E-commerce Teste',
+            'email' => 'ecommerce@teste.com',
+            'password' => Hash::make('password'),
+            'webhook_url' => 'https://webhook.site/test',
             'webhook_secret' => 'super-secret-key-32-characters!!',
         ]);
 

@@ -27,16 +27,16 @@ final class CreateQuoteUseCase
     /** @param iterable<int, CarrierGateway> $carriers */
     public function __construct(
         private readonly QuoteRepository $quoteRepository,
-        private readonly Dispatcher      $dispatcher,
-        private readonly iterable        $carriers,
+        private readonly Dispatcher $dispatcher,
+        private readonly iterable $carriers,
     ) {}
 
     public function execute(CreateQuoteDTO $dto): CreateQuoteResponse
     {
-        $origin      = new Address($dto->originZipcode);
+        $origin = new Address($dto->originZipcode);
         $destination = new Address($dto->destinationZipcode);
-        $weight      = new Weight($dto->weightKg);
-        $dimensions  = new Dimensions($dto->lengthCm, $dto->widthCm, $dto->heightCm);
+        $weight = new Weight($dto->weightKg);
+        $dimensions = new Dimensions($dto->lengthCm, $dto->widthCm, $dto->heightCm);
 
         $cached = Cache::get($dto->cacheKey());
 
@@ -50,16 +50,16 @@ final class CreateQuoteUseCase
         $options = $this->fetchRates($origin, $destination, $weight, $dimensions);
 
         $quote = new Quote(
-            id:            (string) Str::uuid(),
-            storeId:       $dto->storeId,
-            origin:        $origin,
-            destination:   $destination,
-            weight:        $weight,
-            dimensions:    $dimensions,
+            id: (string) Str::uuid(),
+            storeId: $dto->storeId,
+            origin: $origin,
+            destination: $destination,
+            weight: $weight,
+            dimensions: $dimensions,
             declaredValue: Money::fromCents($dto->declaredValueCents),
-            status:        QuoteStatus::Pending,
-            expiresAt:     new DateTimeImmutable('+1 hour'),
-            options:       $options,
+            status: QuoteStatus::Pending,
+            expiresAt: new DateTimeImmutable('+1 hour'),
+            options: $options,
         );
 
         $this->quoteRepository->save($quote);
@@ -71,9 +71,9 @@ final class CreateQuoteUseCase
 
     /** @return CarrierRateResult[] */
     private function fetchRates(
-        Address    $origin,
-        Address    $destination,
-        Weight     $weight,
+        Address $origin,
+        Address $destination,
+        Weight $weight,
         Dimensions $dimensions,
     ): array {
         $options = [];

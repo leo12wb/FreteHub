@@ -19,7 +19,7 @@ final readonly class Weight
         }
 
         if ($kg > self::MAX_KG) {
-            throw new InvalidWeightException("Peso máximo permitido é " . self::MAX_KG . "kg. Recebido: {$kg}kg.");
+            throw new InvalidWeightException('Peso máximo permitido é '.self::MAX_KG."kg. Recebido: {$kg}kg.");
         }
 
         $this->kg = round($kg, 3);

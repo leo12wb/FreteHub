@@ -11,14 +11,14 @@ use DateTimeImmutable;
 final class Shipment
 {
     public function __construct(
-        public readonly string         $id,
-        public readonly string         $quoteId,
-        public readonly string         $storeId,
-        public readonly string         $carrier,
-        public readonly string         $service,
-        public readonly string         $trackingCode,
+        public readonly string $id,
+        public readonly string $quoteId,
+        public readonly string $storeId,
+        public readonly string $carrier,
+        public readonly string $service,
+        public readonly string $trackingCode,
         public readonly ShipmentStatus $status,
-        public readonly ?string        $labelUrl,
+        public readonly ?string $labelUrl,
         public readonly DateTimeImmutable $createdAt,
     ) {}
 
@@ -46,15 +46,15 @@ final class Shipment
         }
 
         return new self(
-            id:           $this->id,
-            quoteId:      $this->quoteId,
-            storeId:      $this->storeId,
-            carrier:      $this->carrier,
-            service:      $this->service,
+            id: $this->id,
+            quoteId: $this->quoteId,
+            storeId: $this->storeId,
+            carrier: $this->carrier,
+            service: $this->service,
             trackingCode: $this->trackingCode,
-            status:       $newStatus,
-            labelUrl:     $this->labelUrl,
-            createdAt:    $this->createdAt,
+            status: $newStatus,
+            labelUrl: $this->labelUrl,
+            createdAt: $this->createdAt,
         );
     }
 }

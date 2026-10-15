@@ -14,28 +14,32 @@ use App\Domain\Shipping\ValueObjects\Weight;
 
 final class CorreiosSedexGateway implements CarrierGateway
 {
-    private const BASE_PRICE_PER_KG  = 7.00;
-    private const BASE_FIXED_FEE     = 15.00;
+    private const BASE_PRICE_PER_KG = 7.00;
+
+    private const BASE_FIXED_FEE = 15.00;
+
     private const BASE_DELIVERY_DAYS = 2;
-    private const FAILURE_RATE       = 0.05;
-    private const VARIATION_PERCENT  = 0.10;
+
+    private const FAILURE_RATE = 0.05;
+
+    private const VARIATION_PERCENT = 0.10;
 
     public function calculateRate(
-        Address    $origin,
-        Address    $destination,
-        Weight     $weight,
+        Address $origin,
+        Address $destination,
+        Weight $weight,
         Dimensions $dimensions,
     ): CarrierRateResult {
         $this->simulateFailure();
 
         $basePrice = ($weight->kg * self::BASE_PRICE_PER_KG) + self::BASE_FIXED_FEE;
-        $price     = $basePrice * $this->priceVariation();
-        $days      = (int) round(self::BASE_DELIVERY_DAYS * $this->daysVariation());
+        $price = $basePrice * $this->priceVariation();
+        $days = (int) round(self::BASE_DELIVERY_DAYS * $this->daysVariation());
 
         return new CarrierRateResult(
-            carrier:      $this->getCarrierName(),
-            service:      $this->getServiceName(),
-            price:        Money::fromFloat(round($price, 2)),
+            carrier: $this->getCarrierName(),
+            service: $this->getServiceName(),
+            price: Money::fromFloat(round($price, 2)),
             deliveryDays: max(1, $days),
         );
     }

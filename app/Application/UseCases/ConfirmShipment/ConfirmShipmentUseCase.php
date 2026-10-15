@@ -19,9 +19,9 @@ use Illuminate\Support\Str;
 final class ConfirmShipmentUseCase
 {
     public function __construct(
-        private readonly QuoteRepository    $quoteRepository,
+        private readonly QuoteRepository $quoteRepository,
         private readonly ShipmentRepository $shipmentRepository,
-        private readonly Dispatcher         $dispatcher,
+        private readonly Dispatcher $dispatcher,
     ) {}
 
     public function execute(ConfirmShipmentDTO $dto): ConfirmShipmentResponse
@@ -45,15 +45,15 @@ final class ConfirmShipmentUseCase
         }
 
         $shipment = new Shipment(
-            id:           (string) Str::uuid(),
-            quoteId:      $quote->id,
-            storeId:      $quote->storeId,
-            carrier:      $option->carrier,
-            service:      $option->service,
+            id: (string) Str::uuid(),
+            quoteId: $quote->id,
+            storeId: $quote->storeId,
+            carrier: $option->carrier,
+            service: $option->service,
             trackingCode: $this->generateTrackingCode($option->carrier),
-            status:       ShipmentStatus::Created,
-            labelUrl:     null,
-            createdAt:    new DateTimeImmutable(),
+            status: ShipmentStatus::Created,
+            labelUrl: null,
+            createdAt: new DateTimeImmutable(),
         );
 
         $confirmedQuote = $quote->confirm();
@@ -67,12 +67,12 @@ final class ConfirmShipmentUseCase
     private function generateTrackingCode(string $carrier): string
     {
         $prefix = match (strtolower($carrier)) {
-            'correios'     => 'BR',
-            'jadlog'       => 'JD',
+            'correios' => 'BR',
+            'jadlog' => 'JD',
             'totalexpress' => 'TX',
-            default        => strtoupper(substr($carrier, 0, 2)),
+            default => strtoupper(substr($carrier, 0, 2)),
         };
 
-        return $prefix . strtoupper(Str::random(10)) . 'BR';
+        return $prefix.strtoupper(Str::random(10)).'BR';
     }
 }

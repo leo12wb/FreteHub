@@ -18,8 +18,8 @@ class ConfirmShipmentRequest extends FormRequest
     {
         return [
             'quote_id' => ['required', 'uuid'],
-            'carrier'  => ['required', 'string', 'max:100'],
-            'service'  => ['required', 'string', 'max:100'],
+            'carrier' => ['required', 'string', 'max:100'],
+            'service' => ['required', 'string', 'max:100'],
         ];
     }
 }

@@ -32,10 +32,10 @@ class Quote extends Model
     protected function casts(): array
     {
         return [
-            'dimensions'  => 'array',
-            'status'      => QuoteStatus::class,
-            'expires_at'  => 'datetime',
-            'weight_kg'   => 'float',
+            'dimensions' => 'array',
+            'status' => QuoteStatus::class,
+            'expires_at' => 'datetime',
+            'weight_kg' => 'float',
         ];
     }
 

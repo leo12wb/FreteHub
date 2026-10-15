@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Store;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -31,12 +32,12 @@ expect()->extend('toBeValidTrackingCode', function () {
 */
 
 /**
- * @param  array<string, mixed> $attributes
- * @return array{\App\Models\Store, string}
+ * @param  array<string, mixed>  $attributes
+ * @return array{Store, string}
  */
 function createAuthenticatedStore(array $attributes = []): array
 {
-    $store = \App\Models\Store::factory()->create($attributes);
+    $store = Store::factory()->create($attributes);
     $token = $store->createToken('test-token')->plainTextToken;
 
     return [$store, $token];

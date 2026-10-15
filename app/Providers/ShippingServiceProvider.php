@@ -34,8 +34,8 @@ class ShippingServiceProvider extends ServiceProvider
         $this->app->bind(CreateQuoteUseCase::class, function ($app) {
             return new CreateQuoteUseCase(
                 quoteRepository: $app->make(QuoteRepository::class),
-                dispatcher:      $app->make(Dispatcher::class),
-                carriers:        $app->tagged(CarrierGateway::class),
+                dispatcher: $app->make(Dispatcher::class),
+                carriers: $app->tagged(CarrierGateway::class),
             );
         });
     }

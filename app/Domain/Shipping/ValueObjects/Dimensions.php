@@ -9,20 +9,22 @@ use App\Domain\Shipping\Exceptions\InvalidDimensionsException;
 final readonly class Dimensions
 {
     public float $lengthCm;
+
     public float $widthCm;
+
     public float $heightCm;
 
     public function __construct(float $lengthCm, float $widthCm, float $heightCm)
     {
         if ($lengthCm <= 0 || $widthCm <= 0 || $heightCm <= 0) {
             throw new InvalidDimensionsException(
-                "Todas as dimensões devem ser maiores que zero. " .
+                'Todas as dimensões devem ser maiores que zero. '.
                 "Recebido: {$lengthCm}x{$widthCm}x{$heightCm}cm."
             );
         }
 
         $this->lengthCm = round($lengthCm, 1);
-        $this->widthCm  = round($widthCm, 1);
+        $this->widthCm = round($widthCm, 1);
         $this->heightCm = round($heightCm, 1);
     }
 
@@ -42,7 +44,7 @@ final readonly class Dimensions
     {
         return [
             'length_cm' => $this->lengthCm,
-            'width_cm'  => $this->widthCm,
+            'width_cm' => $this->widthCm,
             'height_cm' => $this->heightCm,
         ];
     }

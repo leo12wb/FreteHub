@@ -10,6 +10,6 @@ final readonly class CreateQuoteResponse
 {
     public function __construct(
         public Quote $quote,
-        public bool  $fromCache,
+        public bool $fromCache,
     ) {}
 }

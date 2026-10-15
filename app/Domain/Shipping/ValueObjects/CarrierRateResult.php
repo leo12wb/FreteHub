@@ -9,8 +9,8 @@ final readonly class CarrierRateResult
     public function __construct(
         public string $carrier,
         public string $service,
-        public Money  $price,
-        public int    $deliveryDays,
+        public Money $price,
+        public int $deliveryDays,
     ) {}
 
     public function isCheaperThan(self $other): bool
@@ -23,9 +23,9 @@ final readonly class CarrierRateResult
     public function toArray(): array
     {
         return [
-            'carrier'       => $this->carrier,
-            'service'       => $this->service,
-            'price'         => $this->price->toFloat(),
+            'carrier' => $this->carrier,
+            'service' => $this->service,
+            'price' => $this->price->toFloat(),
             'delivery_days' => $this->deliveryDays,
         ];
     }

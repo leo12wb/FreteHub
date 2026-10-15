@@ -15,9 +15,9 @@ class TrackingEventResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'status'      => $this->status,
+            'status' => $this->status,
             'description' => $this->description,
-            'location'    => $this->location,
+            'location' => $this->location,
             'occurred_at' => $this->getRawOriginal('occurred_at'),
         ];
     }

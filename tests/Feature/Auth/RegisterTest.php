@@ -10,9 +10,9 @@ describe('Auth', function (): void {
 
         it('creates a store and returns a token', function (): void {
             $this->postJson('/api/v1/auth/register', [
-                'name'                  => 'Loja Teste',
-                'email'                 => 'loja@teste.com',
-                'password'              => 'password123',
+                'name' => 'Loja Teste',
+                'email' => 'loja@teste.com',
+                'password' => 'password123',
                 'password_confirmation' => 'password123',
             ])
                 ->assertStatus(201)
@@ -25,9 +25,9 @@ describe('Auth', function (): void {
             Store::factory()->create(['email' => 'duplicate@teste.com']);
 
             $this->postJson('/api/v1/auth/register', [
-                'name'                  => 'Outra Loja',
-                'email'                 => 'duplicate@teste.com',
-                'password'              => 'password123',
+                'name' => 'Outra Loja',
+                'email' => 'duplicate@teste.com',
+                'password' => 'password123',
                 'password_confirmation' => 'password123',
             ])->assertStatus(422);
         });
@@ -45,7 +45,7 @@ describe('Auth', function (): void {
             Store::factory()->create(['email' => 'login@teste.com']);
 
             $this->postJson('/api/v1/auth/login', [
-                'email'    => 'login@teste.com',
+                'email' => 'login@teste.com',
                 'password' => 'password',
             ])
                 ->assertStatus(200)
@@ -56,7 +56,7 @@ describe('Auth', function (): void {
             Store::factory()->create(['email' => 'login@teste.com']);
 
             $this->postJson('/api/v1/auth/login', [
-                'email'    => 'login@teste.com',
+                'email' => 'login@teste.com',
                 'password' => 'wrong-password',
             ])->assertStatus(422);
         });

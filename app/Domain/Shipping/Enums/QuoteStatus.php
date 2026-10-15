@@ -6,16 +6,16 @@ namespace App\Domain\Shipping\Enums;
 
 enum QuoteStatus: string
 {
-    case Pending   = 'pending';
+    case Pending = 'pending';
     case Confirmed = 'confirmed';
-    case Expired   = 'expired';
+    case Expired = 'expired';
 
     public function label(): string
     {
         return match ($this) {
-            self::Pending   => 'Aguardando confirmação',
+            self::Pending => 'Aguardando confirmação',
             self::Confirmed => 'Confirmada',
-            self::Expired   => 'Expirada',
+            self::Expired => 'Expirada',
         };
     }
 

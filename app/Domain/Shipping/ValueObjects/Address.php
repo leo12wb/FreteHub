@@ -23,7 +23,7 @@ final readonly class Address
 
     public function formatted(): string
     {
-        return substr($this->zipcode, 0, 5) . '-' . substr($this->zipcode, 5, 3);
+        return substr($this->zipcode, 0, 5).'-'.substr($this->zipcode, 5, 3);
     }
 
     public function equals(self $other): bool

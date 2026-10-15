@@ -19,20 +19,26 @@ class AuthController extends Controller
      *     path="/auth/register",
      *     tags={"Auth"},
      *     summary="Registrar nova loja",
+     *
      *     @OA\RequestBody(
      *         required=true,
+     *
      *         @OA\JsonContent(
      *             required={"name","email","password","password_confirmation"},
+     *
      *             @OA\Property(property="name",                  type="string",  example="Minha Loja"),
      *             @OA\Property(property="email",                 type="string",  format="email", example="loja@exemplo.com"),
      *             @OA\Property(property="password",              type="string",  example="senha123"),
      *             @OA\Property(property="password_confirmation", type="string",  example="senha123")
      *         )
      *     ),
+     *
      *     @OA\Response(
      *         response=201,
      *         description="Loja criada com sucesso",
+     *
      *         @OA\JsonContent(
+     *
      *             @OA\Property(property="token", type="string"),
      *             @OA\Property(property="store", type="object",
      *                 @OA\Property(property="id",    type="integer"),
@@ -41,14 +47,15 @@ class AuthController extends Controller
      *             )
      *         )
      *     ),
+     *
      *     @OA\Response(response=422, description="Erro de validação")
      * )
      */
     public function register(RegisterRequest $request): JsonResponse
     {
         $store = Store::create([
-            'name'     => $request->string('name')->toString(),
-            'email'    => $request->string('email')->toString(),
+            'name' => $request->string('name')->toString(),
+            'email' => $request->string('email')->toString(),
             'password' => $request->string('password')->toString(),
         ]);
 
@@ -57,8 +64,8 @@ class AuthController extends Controller
         return response()->json([
             'token' => $token,
             'store' => [
-                'id'    => $store->id,
-                'name'  => $store->name,
+                'id' => $store->id,
+                'name' => $store->name,
                 'email' => $store->email,
             ],
         ], 201);
@@ -69,26 +76,32 @@ class AuthController extends Controller
      *     path="/auth/login",
      *     tags={"Auth"},
      *     summary="Login da loja",
+     *
      *     @OA\RequestBody(
      *         required=true,
+     *
      *         @OA\JsonContent(
      *             required={"email","password"},
+     *
      *             @OA\Property(property="email",    type="string", format="email", example="loja@exemplo.com"),
      *             @OA\Property(property="password", type="string", example="senha123")
      *         )
      *     ),
+     *
      *     @OA\Response(
      *         response=200,
      *         description="Token gerado",
+     *
      *         @OA\JsonContent(@OA\Property(property="token", type="string"))
      *     ),
+     *
      *     @OA\Response(response=422, description="Credenciais inválidas")
      * )
      */
     public function login(Request $request): JsonResponse
     {
         $request->validate([
-            'email'    => ['required', 'email'],
+            'email' => ['required', 'email'],
             'password' => ['required', 'string'],
         ]);
 
@@ -111,6 +124,7 @@ class AuthController extends Controller
      *     tags={"Auth"},
      *     summary="Revogar token atual",
      *     security={{"sanctum":{}}},
+     *
      *     @OA\Response(response=200, description="Logout realizado"),
      *     @OA\Response(response=401, description="Não autenticado")
      * )

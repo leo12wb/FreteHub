@@ -9,24 +9,21 @@ use App\Domain\Shipping\Contracts\QuoteRepository;
 use App\Domain\Shipping\Entities\Quote;
 use App\Domain\Shipping\Events\QuoteCreated;
 use App\Domain\Shipping\Exceptions\CarrierUnavailableException;
-use App\Domain\Shipping\ValueObjects\Address;
 use App\Domain\Shipping\ValueObjects\CarrierRateResult;
-use App\Domain\Shipping\ValueObjects\Dimensions;
 use App\Domain\Shipping\ValueObjects\Money;
-use App\Domain\Shipping\ValueObjects\Weight;
 use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Support\Facades\Cache;
 
 function makeCreateQuoteDTO(): CreateQuoteDTO
 {
     return new CreateQuoteDTO(
-        storeId:            'store-uuid',
-        originZipcode:      '01310100',
+        storeId: 'store-uuid',
+        originZipcode: '01310100',
         destinationZipcode: '20040020',
-        weightKg:           2.0,
-        lengthCm:           20.0,
-        widthCm:            15.0,
-        heightCm:           10.0,
+        weightKg: 2.0,
+        lengthCm: 20.0,
+        widthCm: 15.0,
+        heightCm: 10.0,
         declaredValueCents: 5000,
     );
 }
@@ -35,9 +32,9 @@ function makeCarrierMock(string $carrier, string $service, int $priceCents, int 
 {
     $mock = Mockery::mock(CarrierGateway::class);
     $mock->shouldReceive('calculateRate')->andReturn(new CarrierRateResult(
-        carrier:      $carrier,
-        service:      $service,
-        price:        Money::fromCents($priceCents),
+        carrier: $carrier,
+        service: $service,
+        price: Money::fromCents($priceCents),
         deliveryDays: $days,
     ));
 
@@ -61,7 +58,7 @@ describe('CreateQuoteUseCase', function (): void {
         $this->repository->shouldReceive('save')->once();
         $this->dispatcher->shouldReceive('dispatch')->once()->with(Mockery::type(QuoteCreated::class));
 
-        $useCase  = new CreateQuoteUseCase($this->repository, $this->dispatcher, $carriers);
+        $useCase = new CreateQuoteUseCase($this->repository, $this->dispatcher, $carriers);
         $response = $useCase->execute(makeCreateQuoteDTO());
 
         expect($response->quote)->toBeInstanceOf(Quote::class)
@@ -78,7 +75,7 @@ describe('CreateQuoteUseCase', function (): void {
         $this->repository->shouldReceive('save')->once();
         $this->dispatcher->shouldReceive('dispatch')->once();
 
-        $useCase  = new CreateQuoteUseCase($this->repository, $this->dispatcher, [$unavailable, $available]);
+        $useCase = new CreateQuoteUseCase($this->repository, $this->dispatcher, [$unavailable, $available]);
         $response = $useCase->execute(makeCreateQuoteDTO());
 
         expect($response->quote->options)->toHaveCount(1);
@@ -91,9 +88,9 @@ describe('CreateQuoteUseCase', function (): void {
         $this->dispatcher->shouldReceive('dispatch')->once();
 
         $useCase = new CreateQuoteUseCase($this->repository, $this->dispatcher, [$carrier]);
-        $dto     = makeCreateQuoteDTO();
+        $dto = makeCreateQuoteDTO();
 
-        $first  = $useCase->execute($dto);
+        $first = $useCase->execute($dto);
         $second = $useCase->execute($dto);
 
         expect($first->fromCache)->toBeFalse()

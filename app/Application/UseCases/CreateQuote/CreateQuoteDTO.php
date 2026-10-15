@@ -10,16 +10,16 @@ final readonly class CreateQuoteDTO
         public string $storeId,
         public string $originZipcode,
         public string $destinationZipcode,
-        public float  $weightKg,
-        public float  $lengthCm,
-        public float  $widthCm,
-        public float  $heightCm,
-        public int    $declaredValueCents,
+        public float $weightKg,
+        public float $lengthCm,
+        public float $widthCm,
+        public float $heightCm,
+        public int $declaredValueCents,
     ) {}
 
     public function cacheKey(): string
     {
-        return 'quote:' . md5(implode('|', [
+        return 'quote:'.md5(implode('|', [
             $this->storeId,
             $this->originZipcode,
             $this->destinationZipcode,

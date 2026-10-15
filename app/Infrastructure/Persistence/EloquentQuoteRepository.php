@@ -23,14 +23,14 @@ final class EloquentQuoteRepository implements QuoteRepository
         $model = QuoteModel::updateOrCreate(
             ['id' => $quote->id],
             [
-                'store_id'             => $quote->storeId,
-                'origin_zipcode'       => $quote->origin->zipcode,
-                'destination_zipcode'  => $quote->destination->zipcode,
-                'weight_kg'            => $quote->weight->kg,
-                'dimensions'           => $quote->dimensions->toArray(),
+                'store_id' => $quote->storeId,
+                'origin_zipcode' => $quote->origin->zipcode,
+                'destination_zipcode' => $quote->destination->zipcode,
+                'weight_kg' => $quote->weight->kg,
+                'dimensions' => $quote->dimensions->toArray(),
                 'declared_value_cents' => $quote->declaredValue->amountInCents,
-                'status'               => $quote->status->value,
-                'expires_at'           => $quote->expiresAt->format('Y-m-d H:i:s'),
+                'status' => $quote->status->value,
+                'expires_at' => $quote->expiresAt->format('Y-m-d H:i:s'),
             ]
         );
 
@@ -38,10 +38,10 @@ final class EloquentQuoteRepository implements QuoteRepository
 
         foreach ($quote->options as $option) {
             QuoteOption::create([
-                'quote_id'      => $quote->id,
-                'carrier'       => $option->carrier,
-                'service'       => $option->service,
-                'price_cents'   => $option->price->amountInCents,
+                'quote_id' => $quote->id,
+                'carrier' => $option->carrier,
+                'service' => $option->service,
+                'price_cents' => $option->price->amountInCents,
                 'delivery_days' => $option->deliveryDays,
             ]);
         }
@@ -94,28 +94,28 @@ final class EloquentQuoteRepository implements QuoteRepository
 
         $options = $model->options
             ->map(fn (QuoteOption $opt) => new CarrierRateResult(
-                carrier:      $opt->carrier,
-                service:      $opt->service,
-                price:        Money::fromCents($opt->price_cents),
+                carrier: $opt->carrier,
+                service: $opt->service,
+                price: Money::fromCents($opt->price_cents),
                 deliveryDays: $opt->delivery_days,
             ))
             ->all();
 
         return new Quote(
-            id:            $model->id,
-            storeId:       (string) $model->store_id,
-            origin:        new Address((string) $model->origin_zipcode),
-            destination:   new Address((string) $model->destination_zipcode),
-            weight:        new Weight((float) $model->weight_kg),
-            dimensions:    new Dimensions(
+            id: $model->id,
+            storeId: (string) $model->store_id,
+            origin: new Address((string) $model->origin_zipcode),
+            destination: new Address((string) $model->destination_zipcode),
+            weight: new Weight((float) $model->weight_kg),
+            dimensions: new Dimensions(
                 lengthCm: (float) ($dims['length_cm'] ?? 1),
-                widthCm:  (float) ($dims['width_cm'] ?? 1),
+                widthCm: (float) ($dims['width_cm'] ?? 1),
                 heightCm: (float) ($dims['height_cm'] ?? 1),
             ),
             declaredValue: Money::fromCents((int) $model->declared_value_cents),
-            status:        QuoteStatus::from((string) $model->getRawOriginal('status')),
-            expiresAt:     new DateTimeImmutable((string) $model->getRawOriginal('expires_at')),
-            options:       $options,
+            status: QuoteStatus::from((string) $model->getRawOriginal('status')),
+            expiresAt: new DateTimeImmutable((string) $model->getRawOriginal('expires_at')),
+            options: $options,
         );
     }
 }

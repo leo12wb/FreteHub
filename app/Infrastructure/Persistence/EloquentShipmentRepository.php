@@ -17,13 +17,13 @@ final class EloquentShipmentRepository implements ShipmentRepository
         ShipmentModel::updateOrCreate(
             ['id' => $shipment->id],
             [
-                'quote_id'      => $shipment->quoteId,
-                'store_id'      => $shipment->storeId,
-                'carrier'       => $shipment->carrier,
-                'service'       => $shipment->service,
+                'quote_id' => $shipment->quoteId,
+                'store_id' => $shipment->storeId,
+                'carrier' => $shipment->carrier,
+                'service' => $shipment->service,
                 'tracking_code' => $shipment->trackingCode,
-                'status'        => $shipment->status->value,
-                'label_url'     => $shipment->labelUrl,
+                'status' => $shipment->status->value,
+                'label_url' => $shipment->labelUrl,
             ]
         );
     }
@@ -78,15 +78,15 @@ final class EloquentShipmentRepository implements ShipmentRepository
     private function toDomain(ShipmentModel $model): Shipment
     {
         return new Shipment(
-            id:           $model->id,
-            quoteId:      (string) $model->quote_id,
-            storeId:      (string) $model->store_id,
-            carrier:      $model->carrier,
-            service:      $model->service,
+            id: $model->id,
+            quoteId: (string) $model->quote_id,
+            storeId: (string) $model->store_id,
+            carrier: $model->carrier,
+            service: $model->service,
             trackingCode: $model->tracking_code,
-            status:       ShipmentStatus::from((string) $model->getRawOriginal('status')),
-            labelUrl:     $model->label_url,
-            createdAt:    new DateTimeImmutable($model->created_at?->toDateTimeString() ?? now()->toDateTimeString()),
+            status: ShipmentStatus::from((string) $model->getRawOriginal('status')),
+            labelUrl: $model->label_url,
+            createdAt: new DateTimeImmutable($model->created_at?->toDateTimeString() ?? now()->toDateTimeString()),
         );
     }
 }

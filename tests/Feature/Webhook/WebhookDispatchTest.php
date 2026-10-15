@@ -15,14 +15,14 @@ describe('Webhook endpoints', function (): void {
         it('configures webhook url and secret', function (): void {
             $this->withToken($this->token)
                 ->postJson('/api/v1/webhooks', [
-                    'webhook_url'    => 'https://example.com/webhook',
+                    'webhook_url' => 'https://example.com/webhook',
                     'webhook_secret' => 'my-super-secret-key-1234567890',
                 ])
                 ->assertStatus(200)
                 ->assertJsonPath('webhook_url', 'https://example.com/webhook');
 
             $this->assertDatabaseHas('stores', [
-                'id'          => $this->store->id,
+                'id' => $this->store->id,
                 'webhook_url' => 'https://example.com/webhook',
             ]);
         });
@@ -30,7 +30,7 @@ describe('Webhook endpoints', function (): void {
         it('rejects invalid url', function (): void {
             $this->withToken($this->token)
                 ->postJson('/api/v1/webhooks', [
-                    'webhook_url'    => 'not-a-url',
+                    'webhook_url' => 'not-a-url',
                     'webhook_secret' => 'my-super-secret-key-1234567890',
                 ])
                 ->assertStatus(422)
@@ -40,7 +40,7 @@ describe('Webhook endpoints', function (): void {
         it('rejects secret shorter than 16 chars', function (): void {
             $this->withToken($this->token)
                 ->postJson('/api/v1/webhooks', [
-                    'webhook_url'    => 'https://example.com/webhook',
+                    'webhook_url' => 'https://example.com/webhook',
                     'webhook_secret' => 'short',
                 ])
                 ->assertStatus(422)
@@ -64,7 +64,7 @@ describe('Webhook endpoints', function (): void {
                 ->assertJson(['message' => 'Webhook removido com sucesso.']);
 
             $this->assertDatabaseHas('stores', [
-                'id'          => $store->id,
+                'id' => $store->id,
                 'webhook_url' => null,
             ]);
         });

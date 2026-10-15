@@ -16,16 +16,16 @@ final class Quote
 {
     /** @param CarrierRateResult[] $options */
     public function __construct(
-        public readonly string            $id,
-        public readonly string            $storeId,
-        public readonly Address           $origin,
-        public readonly Address           $destination,
-        public readonly Weight            $weight,
-        public readonly Dimensions        $dimensions,
-        public readonly Money             $declaredValue,
-        public readonly QuoteStatus       $status,
+        public readonly string $id,
+        public readonly string $storeId,
+        public readonly Address $origin,
+        public readonly Address $destination,
+        public readonly Weight $weight,
+        public readonly Dimensions $dimensions,
+        public readonly Money $declaredValue,
+        public readonly QuoteStatus $status,
         public readonly DateTimeImmutable $expiresAt,
-        public readonly array             $options = [],
+        public readonly array $options = [],
     ) {}
 
     public function isExpired(): bool
@@ -46,32 +46,32 @@ final class Quote
     public function confirm(): self
     {
         return new self(
-            id:            $this->id,
-            storeId:       $this->storeId,
-            origin:        $this->origin,
-            destination:   $this->destination,
-            weight:        $this->weight,
-            dimensions:    $this->dimensions,
+            id: $this->id,
+            storeId: $this->storeId,
+            origin: $this->origin,
+            destination: $this->destination,
+            weight: $this->weight,
+            dimensions: $this->dimensions,
             declaredValue: $this->declaredValue,
-            status:        QuoteStatus::Confirmed,
-            expiresAt:     $this->expiresAt,
-            options:       $this->options,
+            status: QuoteStatus::Confirmed,
+            expiresAt: $this->expiresAt,
+            options: $this->options,
         );
     }
 
     public function expire(): self
     {
         return new self(
-            id:            $this->id,
-            storeId:       $this->storeId,
-            origin:        $this->origin,
-            destination:   $this->destination,
-            weight:        $this->weight,
-            dimensions:    $this->dimensions,
+            id: $this->id,
+            storeId: $this->storeId,
+            origin: $this->origin,
+            destination: $this->destination,
+            weight: $this->weight,
+            dimensions: $this->dimensions,
             declaredValue: $this->declaredValue,
-            status:        QuoteStatus::Expired,
-            expiresAt:     $this->expiresAt,
-            options:       $this->options,
+            status: QuoteStatus::Expired,
+            expiresAt: $this->expiresAt,
+            options: $this->options,
         );
     }
 
@@ -79,8 +79,7 @@ final class Quote
     public function optionsSortedByPrice(): array
     {
         $sorted = $this->options;
-        usort($sorted, fn (CarrierRateResult $a, CarrierRateResult $b) =>
-            $a->price->amountInCents <=> $b->price->amountInCents
+        usort($sorted, fn (CarrierRateResult $a, CarrierRateResult $b) => $a->price->amountInCents <=> $b->price->amountInCents
         );
 
         return $sorted;

@@ -5,18 +5,19 @@ declare(strict_types=1);
 namespace Database\Factories;
 
 use App\Models\Shipment;
+use App\Models\TrackingEvent;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\TrackingEvent>
+ * @extends Factory<TrackingEvent>
  */
 class TrackingEventFactory extends Factory
 {
     private static array $descriptions = [
-        'created'    => 'Objeto postado',
+        'created' => 'Objeto postado',
         'in_transit' => 'Objeto em trânsito para destino',
-        'delivered'  => 'Objeto entregue ao destinatário',
-        'failed'     => 'Tentativa de entrega não realizada',
+        'delivered' => 'Objeto entregue ao destinatário',
+        'failed' => 'Tentativa de entrega não realizada',
     ];
 
     public function definition(): array
@@ -25,9 +26,9 @@ class TrackingEventFactory extends Factory
 
         return [
             'shipment_id' => Shipment::factory(),
-            'status'      => $status,
+            'status' => $status,
             'description' => self::$descriptions[$status],
-            'location'    => fake()->city() . ' - ' . fake()->stateAbbr(),
+            'location' => fake()->city().' - '.fake()->stateAbbr(),
             'occurred_at' => fake()->dateTimeBetween('-7 days', 'now'),
         ];
     }

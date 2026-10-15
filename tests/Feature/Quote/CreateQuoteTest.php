@@ -3,7 +3,6 @@
 declare(strict_types=1);
 
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Event;
 
 describe('POST /api/v1/quotes', function (): void {
 
@@ -15,13 +14,13 @@ describe('POST /api/v1/quotes', function (): void {
     it('creates a quote and returns options', function (): void {
         $this->withToken($this->token)
             ->postJson('/api/v1/quotes', [
-                'origin_zipcode'      => '01310-100',
+                'origin_zipcode' => '01310-100',
                 'destination_zipcode' => '20040-020',
-                'weight_kg'           => 2.0,
-                'length_cm'           => 20,
-                'width_cm'            => 15,
-                'height_cm'           => 10,
-                'declared_value'      => 100.00,
+                'weight_kg' => 2.0,
+                'length_cm' => 20,
+                'width_cm' => 15,
+                'height_cm' => 10,
+                'declared_value' => 100.00,
             ])
             ->assertStatus(201)
             ->assertJsonStructure([
@@ -36,13 +35,13 @@ describe('POST /api/v1/quotes', function (): void {
     it('returns X-From-Cache false on first request', function (): void {
         $response = $this->withToken($this->token)
             ->postJson('/api/v1/quotes', [
-                'origin_zipcode'      => '01310-100',
+                'origin_zipcode' => '01310-100',
                 'destination_zipcode' => '20040-020',
-                'weight_kg'           => 1.0,
-                'length_cm'           => 10,
-                'width_cm'            => 10,
-                'height_cm'           => 10,
-                'declared_value'      => 50.00,
+                'weight_kg' => 1.0,
+                'length_cm' => 10,
+                'width_cm' => 10,
+                'height_cm' => 10,
+                'declared_value' => 50.00,
             ]);
 
         expect($response->headers->get('X-From-Cache'))->toBe('false');
@@ -50,13 +49,13 @@ describe('POST /api/v1/quotes', function (): void {
 
     it('returns X-From-Cache true on second identical request', function (): void {
         $payload = [
-            'origin_zipcode'      => '01310-100',
+            'origin_zipcode' => '01310-100',
             'destination_zipcode' => '20040-020',
-            'weight_kg'           => 1.5,
-            'length_cm'           => 12,
-            'width_cm'            => 12,
-            'height_cm'           => 12,
-            'declared_value'      => 75.00,
+            'weight_kg' => 1.5,
+            'length_cm' => 12,
+            'width_cm' => 12,
+            'height_cm' => 12,
+            'declared_value' => 75.00,
         ];
 
         $this->withToken($this->token)->postJson('/api/v1/quotes', $payload);
@@ -72,18 +71,18 @@ describe('POST /api/v1/quotes', function (): void {
     it('persists quote in the database', function (): void {
         $this->withToken($this->token)
             ->postJson('/api/v1/quotes', [
-                'origin_zipcode'      => '01310-100',
+                'origin_zipcode' => '01310-100',
                 'destination_zipcode' => '20040-020',
-                'weight_kg'           => 2.0,
-                'length_cm'           => 20,
-                'width_cm'            => 15,
-                'height_cm'           => 10,
-                'declared_value'      => 100.00,
+                'weight_kg' => 2.0,
+                'length_cm' => 20,
+                'width_cm' => 15,
+                'height_cm' => 10,
+                'declared_value' => 100.00,
             ]);
 
         $this->assertDatabaseHas('quotes', [
-            'store_id'            => $this->store->id,
-            'origin_zipcode'      => '01310100',
+            'store_id' => $this->store->id,
+            'origin_zipcode' => '01310100',
             'destination_zipcode' => '20040020',
         ]);
     });

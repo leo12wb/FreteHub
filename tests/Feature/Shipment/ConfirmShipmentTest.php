@@ -17,15 +17,15 @@ describe('POST /api/v1/shipments', function (): void {
         $quote = Quote::factory()->pending()->create(['store_id' => $this->store->id]);
         QuoteOption::factory()->create([
             'quote_id' => $quote->id,
-            'carrier'  => 'Correios',
-            'service'  => 'PAC',
+            'carrier' => 'Correios',
+            'service' => 'PAC',
         ]);
 
         $this->withToken($this->token)
             ->postJson('/api/v1/shipments', [
                 'quote_id' => $quote->id,
-                'carrier'  => 'Correios',
-                'service'  => 'PAC',
+                'carrier' => 'Correios',
+                'service' => 'PAC',
             ])
             ->assertStatus(201)
             ->assertJsonStructure([
@@ -39,25 +39,25 @@ describe('POST /api/v1/shipments', function (): void {
         $quote = Quote::factory()->pending()->create(['store_id' => $this->store->id]);
         QuoteOption::factory()->create([
             'quote_id' => $quote->id,
-            'carrier'  => 'JadLog',
-            'service'  => 'Expresso',
+            'carrier' => 'JadLog',
+            'service' => 'Expresso',
         ]);
 
         $this->withToken($this->token)
             ->postJson('/api/v1/shipments', [
                 'quote_id' => $quote->id,
-                'carrier'  => 'JadLog',
-                'service'  => 'Expresso',
+                'carrier' => 'JadLog',
+                'service' => 'Expresso',
             ]);
 
         $this->assertDatabaseHas('shipments', [
             'quote_id' => $quote->id,
-            'carrier'  => 'JadLog',
-            'service'  => 'Expresso',
+            'carrier' => 'JadLog',
+            'service' => 'Expresso',
         ]);
 
         $this->assertDatabaseHas('quotes', [
-            'id'     => $quote->id,
+            'id' => $quote->id,
             'status' => 'confirmed',
         ]);
     });
@@ -66,15 +66,15 @@ describe('POST /api/v1/shipments', function (): void {
         $quote = Quote::factory()->expiredAt()->create(['store_id' => $this->store->id]);
         QuoteOption::factory()->create([
             'quote_id' => $quote->id,
-            'carrier'  => 'Correios',
-            'service'  => 'PAC',
+            'carrier' => 'Correios',
+            'service' => 'PAC',
         ]);
 
         $this->withToken($this->token)
             ->postJson('/api/v1/shipments', [
                 'quote_id' => $quote->id,
-                'carrier'  => 'Correios',
-                'service'  => 'PAC',
+                'carrier' => 'Correios',
+                'service' => 'PAC',
             ])
             ->assertStatus(422);
     });
@@ -83,15 +83,15 @@ describe('POST /api/v1/shipments', function (): void {
         $otherQuote = Quote::factory()->pending()->create();
         QuoteOption::factory()->create([
             'quote_id' => $otherQuote->id,
-            'carrier'  => 'Correios',
-            'service'  => 'PAC',
+            'carrier' => 'Correios',
+            'service' => 'PAC',
         ]);
 
         $this->withToken($this->token)
             ->postJson('/api/v1/shipments', [
                 'quote_id' => $otherQuote->id,
-                'carrier'  => 'Correios',
-                'service'  => 'PAC',
+                'carrier' => 'Correios',
+                'service' => 'PAC',
             ])
             ->assertStatus(404);
     });

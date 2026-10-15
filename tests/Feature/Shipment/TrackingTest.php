@@ -26,14 +26,14 @@ describe('GET /api/v1/shipments/{id}/tracking', function (): void {
 
         TrackingEvent::factory()->create([
             'shipment_id' => $shipment->id,
-            'status'      => 'created',
+            'status' => 'created',
             'description' => 'Objeto postado.',
             'occurred_at' => now()->subHours(2),
         ]);
 
         TrackingEvent::factory()->create([
             'shipment_id' => $shipment->id,
-            'status'      => 'in_transit',
+            'status' => 'in_transit',
             'description' => 'Em trânsito.',
             'occurred_at' => now()->subHour(),
         ]);

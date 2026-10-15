@@ -21,7 +21,7 @@ Route::prefix('v1')->group(function (): void {
 
     // Auth (public)
     Route::post('/auth/register', [AuthController::class, 'register']);
-    Route::post('/auth/login',    [AuthController::class, 'login']);
+    Route::post('/auth/login', [AuthController::class, 'login']);
 
     // Authenticated endpoints — rate limit: 60 req/min
     Route::middleware(['auth:sanctum', 'throttle:60,1'])->group(function (): void {
@@ -32,11 +32,11 @@ Route::prefix('v1')->group(function (): void {
         Route::post('/quotes', [QuoteController::class, 'store']);
 
         // Shipments
-        Route::post('/shipments',                       [ShipmentController::class, 'store']);
-        Route::get('/shipments/{shipment}/tracking',    [ShipmentController::class, 'tracking']);
+        Route::post('/shipments', [ShipmentController::class, 'store']);
+        Route::get('/shipments/{shipment}/tracking', [ShipmentController::class, 'tracking']);
 
         // Webhook config
-        Route::post('/webhooks',   [WebhookController::class, 'store']);
+        Route::post('/webhooks', [WebhookController::class, 'store']);
         Route::delete('/webhooks', [WebhookController::class, 'destroy']);
     });
 });

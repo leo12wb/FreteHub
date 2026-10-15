@@ -15,20 +15,20 @@ class QuoteResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id'                  => $this->id,
-            'store_id'            => $this->storeId,
-            'origin_zipcode'      => $this->origin->formatted(),
+            'id' => $this->id,
+            'store_id' => $this->storeId,
+            'origin_zipcode' => $this->origin->formatted(),
             'destination_zipcode' => $this->destination->formatted(),
-            'weight_kg'           => $this->weight->kg,
-            'dimensions'          => $this->dimensions->toArray(),
-            'declared_value'      => $this->declaredValue->toFloat(),
-            'status'              => $this->status->value,
-            'expires_at'          => $this->expiresAt->format('Y-m-d\TH:i:s\Z'),
-            'options'             => array_map(
+            'weight_kg' => $this->weight->kg,
+            'dimensions' => $this->dimensions->toArray(),
+            'declared_value' => $this->declaredValue->toFloat(),
+            'status' => $this->status->value,
+            'expires_at' => $this->expiresAt->format('Y-m-d\TH:i:s\Z'),
+            'options' => array_map(
                 fn ($opt) => [
-                    'carrier'       => $opt->carrier,
-                    'service'       => $opt->service,
-                    'price'         => $opt->price->toFloat(),
+                    'carrier' => $opt->carrier,
+                    'service' => $opt->service,
+                    'price' => $opt->price->toFloat(),
                     'delivery_days' => $opt->deliveryDays,
                 ],
                 $this->optionsSortedByPrice(),

@@ -16,10 +16,13 @@ class HealthController extends Controller
      *     tags={"Health"},
      *     summary="Verificar saúde da aplicação",
      *     description="Checa a conectividade com o banco de dados e o Redis.",
+     *
      *     @OA\Response(
      *         response=200,
      *         description="Aplicação saudável",
+     *
      *         @OA\JsonContent(
+     *
      *             @OA\Property(property="status",  type="string", example="ok"),
      *             @OA\Property(property="version", type="string", example="1.0.0"),
      *             @OA\Property(property="checks",  type="object",
@@ -28,21 +31,22 @@ class HealthController extends Controller
      *             )
      *         )
      *     ),
+     *
      *     @OA\Response(response=503, description="Aplicação degradada")
      * )
      */
     public function index(): JsonResponse
     {
-        $db    = $this->checkDatabase();
+        $db = $this->checkDatabase();
         $redis = $this->checkRedis();
 
         $status = ($db && $redis) ? 'ok' : 'degraded';
 
         return response()->json([
-            'status'  => $status,
-            'checks'  => [
-                'database' => $db    ? 'ok' : 'error',
-                'redis'    => $redis ? 'ok' : 'error',
+            'status' => $status,
+            'checks' => [
+                'database' => $db ? 'ok' : 'error',
+                'redis' => $redis ? 'ok' : 'error',
             ],
             'version' => config('app.version', '1.0.0'),
         ], $status === 'ok' ? 200 : 503);

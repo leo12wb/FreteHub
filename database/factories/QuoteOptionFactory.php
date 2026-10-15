@@ -5,10 +5,11 @@ declare(strict_types=1);
 namespace Database\Factories;
 
 use App\Models\Quote;
+use App\Models\QuoteOption;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\QuoteOption>
+ * @extends Factory<QuoteOption>
  */
 class QuoteOptionFactory extends Factory
 {
@@ -24,10 +25,10 @@ class QuoteOptionFactory extends Factory
         $carrier = fake()->randomElement(self::$carriers);
 
         return [
-            'quote_id'      => Quote::factory(),
-            'carrier'       => $carrier['carrier'],
-            'service'       => $carrier['service'],
-            'price_cents'   => fake()->numberBetween(1000, 8000),
+            'quote_id' => Quote::factory(),
+            'carrier' => $carrier['carrier'],
+            'service' => $carrier['service'],
+            'price_cents' => fake()->numberBetween(1000, 8000),
             'delivery_days' => fake()->numberBetween(1, 10),
         ];
     }

@@ -36,7 +36,7 @@ final readonly class Money
 
     public function formatted(): string
     {
-        return 'R$ ' . number_format($this->toFloat(), 2, ',', '.');
+        return 'R$ '.number_format($this->toFloat(), 2, ',', '.');
     }
 
     public function add(self $other): self

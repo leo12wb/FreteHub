@@ -20,22 +20,22 @@ final class SendWebhookOnTrackingUpdated implements ShouldQueue
         }
 
         $payload = [
-            'event'          => 'tracking.updated',
-            'shipment_id'    => $event->shipment->id,
-            'tracking_code'  => $event->shipment->trackingCode,
-            'carrier'        => $event->shipment->carrier,
-            'service'        => $event->shipment->service,
-            'status'         => $event->shipment->status->value,
-            'previous_status'=> $event->previousStatus->value,
-            'description'    => $event->description,
-            'location'       => $event->location,
-            'occurred_at'    => now()->toIso8601String(),
+            'event' => 'tracking.updated',
+            'shipment_id' => $event->shipment->id,
+            'tracking_code' => $event->shipment->trackingCode,
+            'carrier' => $event->shipment->carrier,
+            'service' => $event->shipment->service,
+            'status' => $event->shipment->status->value,
+            'previous_status' => $event->previousStatus->value,
+            'description' => $event->description,
+            'location' => $event->location,
+            'occurred_at' => now()->toIso8601String(),
         ];
 
         SendWebhookJob::dispatch(
-            storeId:    (int) $event->shipment->storeId,
+            storeId: (int) $event->shipment->storeId,
             shipmentId: $event->shipment->id,
-            payload:    $payload,
+            payload: $payload,
         );
     }
 }
